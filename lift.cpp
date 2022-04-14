@@ -1,10 +1,10 @@
 #include "header.h"
 
-void lift(igraph_t *g, int *height,igraph_integer_t vid)
+void lift(igraph_t *g,igraph_integer_t vid, int txnid)
 {
 	igraph_integer_t neighbor,height_min=igraph_vcount(g)+100,eid1;
 	int flag=0;
-	if(strcmp("source",igraph_cattribute_VAS(g,"type",vid))!=0)
+	if(types[vid][txnid]!=1)
 	{
 		igraph_vs_t vs;
 	        igraph_vit_t vit;
@@ -21,14 +21,14 @@ void lift(igraph_t *g, int *height,igraph_integer_t vid)
                         if((igraph_integer_t)igraph_cattribute_EAN(g,"flow",eid1)<(igraph_integer_t)igraph_cattribute_EAN(g,"weight",eid1))
 			{
 				flag=1;
-				height_min=min(height_min,height[neighbor]);
+				height_min=min(height_min,txn_heights[neighbor][txnid]);
 			}
 			IGRAPH_VIT_NEXT(vit);				
 	
 		}
 
-                if(flag==1 && height[vid]<=height_min)
-		        height[vid]=height_min+1;
+                if(flag==1 && txn_heights[vid][txnid]<=height_min)
+		        txn_heights[vid][txnid]=height_min+1;
                //printf("inc=%d,%d\n",vid,height[vid]);
 	}	
 

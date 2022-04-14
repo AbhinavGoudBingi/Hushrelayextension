@@ -1,18 +1,19 @@
 #include "header.h"
 
 
-void main_func(igraph_t *g,int *height,int source,int sink)
+void main_func(igraph_t *g,int source,int sink,int txnid)
 {
 	igraph_integer_t vid,excess,vid_neighbour,eid1,res_cap,flow,amount_subtract,flag=0,eid2;
-	preflow(g,height,source);
+	preflow(g,source,txnid);
+	
 	while(1)
 	{	
             flag=0;
 	for(vid=0;vid<igraph_vcount(g);vid++)
 	{
-	      if(strcmp("source",igraph_cattribute_VAS(g,"type",vid))!=0 && strcmp("sink",igraph_cattribute_VAS(g,"type",vid))!=0)
+	      if(types[vid][txnid]!=1 && types[vid][txnid]!=-1)
 	      {	
-			excess=(igraph_integer_t)igraph_cattribute_VAN(g,"excess",vid);	
+			excess=excesses[vid][txnid];//(igraph_integer_t)igraph_cattribute_VAN(g,"excess",vid);	
                      //   printf("excess=%d,%d\n",excess,vid);
 //			while(excess>0)
 			if(excess>0)
@@ -29,18 +30,19 @@ void main_func(igraph_t *g,int *height,int source,int sink)
 					
 					vid_neighbour=IGRAPH_VIT_GET(vit);
 
-					excess=(igraph_integer_t)igraph_cattribute_VAN(g,"excess",vid);	
+					excess=excesses[vid][txnid];//(igraph_integer_t)igraph_cattribute_VAN(g,"excess",vid);	
                        //                 printf("%dneigh:%d,%d,%d\n",vid,vid_neighbour,height[vid],height[vid_neighbour]);   
 					igraph_get_eid(g,&eid1,vid,vid_neighbour,IGRAPH_DIRECTED,1);
 					flow=(igraph_integer_t)igraph_cattribute_EAN(g,"flow",eid1);
 					res_cap=(igraph_integer_t)igraph_cattribute_EAN(g,"weight",eid1)-flow;
 					//printf("flow=%d,%d\n",(igraph_integer_t)igraph_cattribute_EAN(g,"flow",eid1),(igraph_integer_t)igraph_cattribute_EAN(g,"weight",eid1));
-					if(height[vid_neighbour]<height[vid] && (igraph_integer_t)igraph_cattribute_EAN(g,"flow",eid1)<(igraph_integer_t)igraph_cattribute_EAN(g,"weight",eid1))
+					if(txn_heights[vid_neighbour][txnid]<txn_heights[vid][txnid] && (igraph_integer_t)igraph_cattribute_EAN(g,"flow",eid1)<(igraph_integer_t)igraph_cattribute_EAN(g,"weight",eid1))
 					{
                                                       
 						amount_subtract=min(excess,res_cap);
 						//printf("set flow neigh:%d,%d,%d\n",vid,vid_neighbour,flow+amount_subtract); 
-               		                        igraph_cattribute_VAN_set(g,"excess",vid,excess-amount_subtract);
+               		                       // igraph_cattribute_VAN_set(g,"excess",vid,excess-amount_subtract);
+											excesses[vid][txnid]= excess-amount_subtract;
 						igraph_cattribute_EAN_set(g,"flow",eid1,flow+amount_subtract);
                                                 //igraph_cattribute_EAN_set(g,"flow_true",eid1,1);            
 
@@ -51,11 +53,11 @@ void main_func(igraph_t *g,int *height,int source,int sink)
                                                	    igraph_cattribute_EAN_set(g,"flow_true",eid1,1);		
 
 
-						approve_push(g,vid_neighbour,amount_subtract,height);
+						approve_push(g,vid_neighbour,amount_subtract, txnid);
 
 					}
 					else
-					        lift(g,height,vid);
+					        lift(g,vid,txnid);
 					if(excess==0)
 					   break;
 					IGRAPH_VIT_NEXT(vit);
