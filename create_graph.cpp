@@ -2,13 +2,13 @@
 #include <stdio.h>
 #include <time.h>
 typedef struct num{
-   igraph_integer_t vid;
-   igraph_integer_t deg;
+   int vid;
+   int deg;
 }array_list;
 
-void sort(array_list *array, igraph_integer_t count)
+void sort(array_list *array, int count)
 {
-      igraph_integer_t i,j,temp1,temp2;
+      int i,j,temp1,temp2;
 
    	for(i=0;i<count-1;i++)
          {
@@ -38,7 +38,7 @@ int main(int argc,char *argv[]){
     int num_nodes;
 	
     igraph_t g;
-    igraph_integer_t from,to,eid,vid,cap,eid1,result,track;
+    int from,to,eid,vid,cap,eid1,result,track;
     igraph_vector_t res;
     igraph_vs_t vs;
     igraph_vit_t vit;
@@ -91,7 +91,7 @@ int main(int argc,char *argv[]){
     {
 	igraph_edge(&graph,eid,&from,&to);
 	igraph_get_eid(&graph,&eid1,from,to,IGRAPH_DIRECTED,1);
-	//printf("%d %d %d %d\n",from,to,(igraph_integer_t)igraph_cattribute_EAN(&graph,"flow",eid1),(igraph_integer_t)igraph_cattribute_EAN(&graph,"weight",eid1));	
+	//printf("%d %d %d %d\n",from,to,(int)igraph_cattribute_EAN(&graph,"flow",eid1),(int)igraph_cattribute_EAN(&graph,"weight",eid1));	
 
     }
    
@@ -104,7 +104,7 @@ int main(int argc,char *argv[]){
     {
 	igraph_edge(&g,eid,&from,&to);
 	igraph_get_eid(&graph,&eid1,from,to,IGRAPH_DIRECTED,1);
-	fprintf(fp1,"%d %d\n",(igraph_integer_t)igraph_cattribute_EAN(&graph,"flow",eid1),(igraph_integer_t)igraph_cattribute_EAN(&graph,"weight",eid1));	
+	fprintf(fp1,"%d %d\n",(int)igraph_cattribute_EAN(&graph,"flow",eid1),(int)igraph_cattribute_EAN(&graph,"weight",eid1));	
 
     }
     fprintf(gtna,"# Name of the Graph: \ncredit network basic \n# Number of Nodes:\n%d \n# Number of Edges: \n%d \n",igraph_vcount(&g),igraph_ecount(&g));

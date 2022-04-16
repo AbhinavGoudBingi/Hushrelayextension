@@ -3,7 +3,7 @@
 
 void main_func(igraph_t *g,int source,int sink,int txnid)
 {
-	igraph_integer_t vid,excess,vid_neighbour,eid1,res_cap,flow,amount_subtract,flag=0,eid2;
+	int vid,excess,vid_neighbour,eid1,res_cap,flow,amount_subtract,flag=0,eid2;
 	preflow(g,source,txnid);
 	
 	while(1)
@@ -13,7 +13,7 @@ void main_func(igraph_t *g,int source,int sink,int txnid)
 	{
 	      if(types[vid][txnid]!=1 && types[vid][txnid]!=-1)
 	      {	
-			excess=excesses[vid][txnid];//(igraph_integer_t)igraph_cattribute_VAN(g,"excess",vid);	
+			excess=excesses[vid][txnid];//(int)igraph_cattribute_VAN(g,"excess",vid);	
                      //   printf("excess=%d,%d\n",excess,vid);
 //			while(excess>0)
 			if(excess>0)
@@ -24,19 +24,18 @@ void main_func(igraph_t *g,int source,int sink,int txnid)
 			        igraph_vit_t vit;
         			igraph_vs_adj(&vs,vid,IGRAPH_OUT);
 				igraph_vit_create(g,vs,&vit);
-			
 				while(!IGRAPH_VIT_END(vit))
 				{
 					
 					vid_neighbour=IGRAPH_VIT_GET(vit);
 
-					excess=excesses[vid][txnid];//(igraph_integer_t)igraph_cattribute_VAN(g,"excess",vid);	
+					excess=excesses[vid][txnid];//(int)igraph_cattribute_VAN(g,"excess",vid);	
                        //                 printf("%dneigh:%d,%d,%d\n",vid,vid_neighbour,height[vid],height[vid_neighbour]);   
 					igraph_get_eid(g,&eid1,vid,vid_neighbour,IGRAPH_DIRECTED,1);
-					flow=(igraph_integer_t)igraph_cattribute_EAN(g,"flow",eid1);
-					res_cap=(igraph_integer_t)igraph_cattribute_EAN(g,"weight",eid1)-flow;
-					//printf("flow=%d,%d\n",(igraph_integer_t)igraph_cattribute_EAN(g,"flow",eid1),(igraph_integer_t)igraph_cattribute_EAN(g,"weight",eid1));
-					if(txn_heights[vid_neighbour][txnid]<txn_heights[vid][txnid] && (igraph_integer_t)igraph_cattribute_EAN(g,"flow",eid1)<(igraph_integer_t)igraph_cattribute_EAN(g,"weight",eid1))
+					flow=(int)igraph_cattribute_EAN(g,"flow",eid1);
+					res_cap=(int)igraph_cattribute_EAN(g,"weight",eid1)-flow;
+					//printf("flow=%d,%d\n",(int)igraph_cattribute_EAN(g,"flow",eid1),(int)igraph_cattribute_EAN(g,"weight",eid1));
+					if(txn_heights[vid_neighbour][txnid]<txn_heights[vid][txnid] && (int)igraph_cattribute_EAN(g,"flow",eid1)<(int)igraph_cattribute_EAN(g,"weight",eid1))
 					{
                                                       
 						amount_subtract=min(excess,res_cap);
@@ -48,22 +47,23 @@ void main_func(igraph_t *g,int source,int sink,int txnid)
 
 						igraph_get_eid(g,&eid2,vid_neighbour,vid,IGRAPH_DIRECTED,1);
 						
-						igraph_cattribute_EAN_set(g,"flow",eid2,(igraph_integer_t)igraph_cattribute_EAN(g,"weight",eid1)-flow-amount_subtract);
-						if((igraph_integer_t)igraph_cattribute_EAN(g,"flow_true",eid2)==0 && (igraph_integer_t)igraph_cattribute_EAN(g,"flow",eid1)!=0)
-                                               	    igraph_cattribute_EAN_set(g,"flow_true",eid1,1);		
-
+						igraph_cattribute_EAN_set(g,"flow",eid2,(int)igraph_cattribute_EAN(g,"weight",eid1)-flow-amount_subtract);
+						if((int)igraph_cattribute_EAN(g,"flow_true",eid2)==0 && (int)igraph_cattribute_EAN(g,"flow",eid1)!=0){
+                                               	    igraph_cattribute_EAN_set(g,"flow_true",eid1,1);		}
 
 						approve_push(g,vid_neighbour,amount_subtract, txnid);
 
 					}
-					else
+					else{
+
 					        lift(g,vid,txnid);
-					if(excess==0)
+					}
+					if(excess==0){
 					   break;
+					}
 					IGRAPH_VIT_NEXT(vit);
 					
 				}
-				
 				
 				
 				igraph_vit_destroy(&vit);
@@ -77,8 +77,10 @@ void main_func(igraph_t *g,int source,int sink,int txnid)
 		}
        }
 	
-	if(flag==0)
+	if(flag==0){
 	  break;
+	}
+
 }
        
  //       if(flag==0)

@@ -2,7 +2,7 @@
 void preflow(igraph_t *g,int source, int txnid)
 {
 	int excess_val= excesses[source][txnid];// igraph_cattribute_VAN(g,"excess",source);
-	igraph_integer_t from,to,eid,cap,amout_subtract,eid1,amount_subtract;
+	int from,to,eid,cap,amout_subtract,eid1,amount_subtract;
 	igraph_vs_t vs;
         igraph_vit_t vit;
         igraph_vs_adj(&vs,source,IGRAPH_OUT);
@@ -16,7 +16,7 @@ void preflow(igraph_t *g,int source, int txnid)
 //		printf("from=%d,to=%d\n",from,to);
                 excess_val=excesses[source][txnid];//igraph_cattribute_VAN(g,"excess",source);
 		igraph_get_eid(g,&eid,from,to,IGRAPH_DIRECTED,1);
-		cap=(igraph_integer_t)igraph_cattribute_EAN(g,"weight",eid)-(igraph_integer_t)igraph_cattribute_EAN(g,"flow",eid);
+		cap=(int)igraph_cattribute_EAN(g,"weight",eid)-(int)igraph_cattribute_EAN(g,"flow",eid);
 		amount_subtract=min(excess_val,cap);
 //		printf("as=%d,%d,%d\n",amount_subtract,excess_val,source);
 		if(amount_subtract>0)
@@ -29,15 +29,15 @@ void preflow(igraph_t *g,int source, int txnid)
 			igraph_cattribute_EAN_set(g,"flow",eid1,cap-amount_subtract);
 			//igraph_cattribute_VAN_set(g,"excess",to,amount_subtract);	
 			excesses[to][txnid] = amount_subtract;
-                	if(types[to][txnid]!=-1)
+                	if(types[to][txnid]!=-1){
 		   		lift(g,to,txnid);
+					}
 
 		}
 
 		IGRAPH_VIT_NEXT(vit);
 
 	}
-	
 
 }
 
