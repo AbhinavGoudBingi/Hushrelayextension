@@ -72,7 +72,7 @@ int push_test(int argc, char *argv[],int txnid,int source, int sink,igraph_t *g)
  	if(excesses[sink][txnid]==value)
         {
 	    
-	    	     
+	    	 cout<<"sending ACK\n";    
             //printf("generating random samples for all these nodes\n");
 //            payment(&g,height,source,sink,&totalBytes);		       	
 	    e=clock();
@@ -86,6 +86,7 @@ int push_test(int argc, char *argv[],int txnid,int source, int sink,igraph_t *g)
         }
         else
 	{
+		cout<<"sending NACK\n";
 	   printf("fail %d\n",sink);
            /* e=clock();
 	    

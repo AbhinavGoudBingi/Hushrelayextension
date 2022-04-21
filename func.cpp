@@ -5,7 +5,7 @@ void main_func(igraph_t *g,int source,int sink,int txnid)
 {
 	int vid,excess,vid_neighbour,eid1,res_cap,flow,amount_subtract,flag=0,eid2;
 	preflow(g,source,txnid);
-	
+	cout<<"Starting main function\n";
 	while(1)
 	{	
             flag=0;
@@ -26,6 +26,8 @@ void main_func(igraph_t *g,int source,int sink,int txnid)
 				igraph_vit_create(g,vs,&vit);
 				while(!IGRAPH_VIT_END(vit))
 				{
+
+					cout<<"checking for nearby nodes\n";
 					
 					vid_neighbour=IGRAPH_VIT_GET(vit);
 
@@ -50,7 +52,7 @@ void main_func(igraph_t *g,int source,int sink,int txnid)
 						igraph_cattribute_EAN_set(g,"flow",eid2,(int)igraph_cattribute_EAN(g,"weight",eid1)-flow-amount_subtract);
 						if((int)igraph_cattribute_EAN(g,"flow_true",eid2)==0 && (int)igraph_cattribute_EAN(g,"flow",eid1)!=0){
                                                	    igraph_cattribute_EAN_set(g,"flow_true",eid1,1);		}
-
+						cout<<"waiting for push approval to node "<<vid_neighbour<<" for txnid "<<txnid<<"\n";
 						approve_push(g,vid_neighbour,amount_subtract, txnid);
 
 					}

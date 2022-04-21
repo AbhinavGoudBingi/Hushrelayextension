@@ -8,7 +8,7 @@ void preflow(igraph_t *g,int source, int txnid)
         igraph_vs_adj(&vs,source,IGRAPH_OUT);
 	igraph_vit_create(g,vs,&vit);
 	from=source;	
-	
+	cout<<"dividing txn into smaller parts\n";
 	while(!IGRAPH_VIT_END(vit))
 	{
 				
@@ -18,6 +18,7 @@ void preflow(igraph_t *g,int source, int txnid)
 		igraph_get_eid(g,&eid,from,to,IGRAPH_DIRECTED,1);
 		cap=(int)igraph_cattribute_EAN(g,"weight",eid)-(int)igraph_cattribute_EAN(g,"flow",eid);
 		amount_subtract=min(excess_val,cap);
+		cout<<"checking for nearby nodes\n";
 //		printf("as=%d,%d,%d\n",amount_subtract,excess_val,source);
 		if(amount_subtract>0)
 		{
@@ -28,6 +29,7 @@ void preflow(igraph_t *g,int source, int txnid)
 			igraph_get_eid(g,&eid1,to,from,IGRAPH_DIRECTED,1);
 			igraph_cattribute_EAN_set(g,"flow",eid1,cap-amount_subtract);
 			//igraph_cattribute_VAN_set(g,"excess",to,amount_subtract);	
+			cout<<"sending "<<amount_subtract<<" amount from node "<<from<<" to node "<<to<<endl;
 			excesses[to][txnid] = amount_subtract;
                 	if(types[to][txnid]!=-1){
 		   		lift(g,to,txnid);

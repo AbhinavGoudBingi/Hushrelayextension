@@ -9,6 +9,7 @@ void approve_push(igraph_t *g,int vid_neighbour,int flow, int txnid)
         if(types[vid_neighbour][txnid]!=-1)
         {
 //		printf("exit=%s\n",igraph_cattribute_VAS(g,"type",vid_neighbour));
+		cout<<"approving push to node "<<vid_neighbour<<" for txn id "<<txnid<<"\n";
 	        lift(g,vid_neighbour,txnid);
 
 	}	

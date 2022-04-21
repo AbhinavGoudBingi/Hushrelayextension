@@ -27,7 +27,7 @@ void lift(igraph_t *g,int vid, int txnid)
 			IGRAPH_VIT_NEXT(vit);				
 	
 		}
-
+				cout<<"changing height of node "<<vid<<" from "<<txn_heights[vid][txnid]<<" to "<<height_min+1<<" for txnid "<<txnid<<endl;
                 if(flag==1 && txn_heights[vid][txnid]<=height_min)
 		        txn_heights[vid][txnid]=height_min+1;
                //printf("inc=%d,%d\n",vid,height[vid]);

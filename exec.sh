@@ -20,7 +20,7 @@ do
     #    continue
     # fi
      
-    valgrind ./push_relabel node_$i/read_graph_edge_$i.txt node_$i/read_graph_weight_$i.txt output_file.txt node_$i/sampleTr-0.txt
+    ./push_relabel node_$i/read_graph_edge_$i.txt node_$i/read_graph_weight_$i.txt output_file.txt node_$i/sampleTr-0.txt
     
      #echo $val.00 $j $k >> output_file.txt
      count=$(($count+1));
